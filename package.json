@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "@digitalbazaar/ecdsa-multikey": "^1.6.0",
-    "jsonld": "^8.3.2"
+    "jsonld": "^8.3.2",
+    "@digitalbazaar/di-sd-primitives": "^3.0.0"
   },
   "devDependencies": {
     "@digitalbazaar/data-integrity": "^2.0.0",
