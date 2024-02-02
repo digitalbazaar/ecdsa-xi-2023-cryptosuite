@@ -12,8 +12,8 @@ import {
   ecdsaMultikeyKeyPair,
   ecdsaSecp256KeyPair
 } from './mock-data.js';
-import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
 import {createCryptosuite} from '../lib/index.js';
+import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
 
 import {loader} from './documentLoader.js';
 
@@ -191,7 +191,7 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.exist;
       expect(error.name).to.equal('jsonld.ValidationError');
     });
-    
+
     it('should fail to sign with non-string extraInformation', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
       unsignedCredential.type.push('UndefinedType');
@@ -217,7 +217,7 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.exist;
       expect(error.name).to.equal('jsonld.ValidationError');
     });
-    
+
     it('should fail to sign with incorrect signer algorithm', async () => {
       const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
       const date = '2023-03-01T21:29:24Z';
