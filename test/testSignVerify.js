@@ -1,24 +1,16 @@
 import * as EcdsaMultikey from '@digitalbazaar/ecdsa-multikey';
+import {createCryptosuite} from '../lib/create.js';
 import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
+import {ecdsaMultikeyKeyPair} from './mock-data.js';
 import jsigs from 'jsonld-signatures';
-import { createCryptosuite } from './create.js';
+import {loader} from './documentLoader.js';
+
 const {purposes: {AssertionProofPurpose}} = jsigs;
-import {ecdsaMultikeyKeyPair} from '../test/mock-data.js'
-import {loader} from '../test/documentLoader.js';
-import {encode} from '@digitalbazaar/cborld';
 
 // import the ECDSA key pair to use when signing
 const publicKeyMultibase = 'zDnaekGZTbQBerwcehBSXLqAg6s55hVEBms1zFy89VHXtJSa9';
-const secretKeyMultibase = 'z42tqZ5smVag3DtDhjY9YfVwTMyVHW6SCHJi2ZMrD23DGYS3';
 const controller = `did:key:${publicKeyMultibase}`;
-const keyId = `${controller}#${publicKeyMultibase}`;
-const publicEcdsaMultikey = {
-  '@context': 'https://w3id.org/security/multikey/v1',
-  type: 'Multikey',
-  controller: `did:key:${publicKeyMultibase}`,
-  id: keyId,
-  publicKeyMultibase
-};
+
 const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
 const documentLoader = loader.build();
 
@@ -43,9 +35,8 @@ const unsignedCredential = {
   }
 };
 
-
-let utf8Encode = new TextEncoder();
-const extraInformation = utf8Encode.encode("6d721ae5d334cead832a8576bdd24d9a");
+const utf8Encode = new TextEncoder();
+const extraInformation = utf8Encode.encode('6d721ae5d334cead832a8576bdd24d9a');
 
 // create suite
 const suite = new DataIntegrityProof({
@@ -59,7 +50,6 @@ const signedCredential = await jsigs.sign(unsignedCredential, {
   purpose: new AssertionProofPurpose(),
   documentLoader
 });
-
 
 // verify the derived credential
 const result = await jsigs.verify(signedCredential, {
