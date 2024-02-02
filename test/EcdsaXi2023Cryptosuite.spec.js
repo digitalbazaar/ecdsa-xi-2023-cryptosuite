@@ -13,11 +13,13 @@ import {
   ecdsaSecp256KeyPair
 } from './mock-data.js';
 import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
-import {cryptosuite as ecdsaXi2023Cryptosuite} from '../lib/index.js';
+import {createCryptosuite} from '../lib/index.js';
 
 import {loader} from './documentLoader.js';
 
 const documentLoader = loader.build();
+const extraInformation = '6d721ae5d334cead832a8576bdd24d9a';
+const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation});
 
 describe('EcdsaXi2023Cryptosuite', () => {
   describe('exports', () => {
@@ -189,7 +191,33 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.exist;
       expect(error.name).to.equal('jsonld.ValidationError');
     });
+    
+    it('should fail to sign with non-string extraInformation', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      unsignedCredential.type.push('UndefinedType');
 
+      const badCryptosuite = createCryptosuite(100);
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+      const suite = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: badCryptosuite
+      });
+
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+
+      expect(error).to.exist;
+      expect(error.name).to.equal('jsonld.ValidationError');
+    });
+    
     it('should fail to sign with incorrect signer algorithm', async () => {
       const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
       const date = '2023-03-01T21:29:24Z';
