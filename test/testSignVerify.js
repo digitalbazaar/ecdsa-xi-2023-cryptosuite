@@ -35,8 +35,8 @@ const unsignedCredential = {
   }
 };
 
-const utf8Encode = new TextEncoder();
-const extraInformation = utf8Encode.encode('6d721ae5d334cead832a8576bdd24d9a');
+const extraInformation = new Uint8Array([12, 52, 75, 63, 74, 85,
+  21, 5, 62, 100]);
 
 // create suite
 const suite = new DataIntegrityProof({

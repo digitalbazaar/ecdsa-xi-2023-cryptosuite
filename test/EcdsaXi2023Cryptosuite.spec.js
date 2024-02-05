@@ -18,7 +18,14 @@ import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
 import {loader} from './documentLoader.js';
 
 const documentLoader = loader.build();
-const extraInformation = '6d721ae5d334cead832a8576bdd24d9a';
+const extraInformation = new Uint8Array([12, 52, 75, 63, 74, 85, 21, 5, 62, 10,
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
+  12, 52, 75, 63
+]);
 const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation});
 
 describe('EcdsaXi2023Cryptosuite', () => {
@@ -192,7 +199,7 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error.name).to.equal('jsonld.ValidationError');
     });
 
-    it('should fail to sign with non-string extraInformation', async () => {
+    it('should fail to sign with non-bytes extraInformation', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
       unsignedCredential.type.push('UndefinedType');
 
