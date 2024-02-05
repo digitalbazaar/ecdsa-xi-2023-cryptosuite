@@ -48,7 +48,7 @@ export const credential = {
     },
     'https://w3id.org/security/data-integrity/v2'
   ],
-  id: 'http://example.edu/credentials/1872',
+  id: 'https://example.edu/credentials/1872',
   type: ['VerifiableCredential', 'AlumniCredential'],
   issuer: 'https://example.edu/issuers/565049',
   issuanceDate: '2010-01-01T19:23:24Z',
