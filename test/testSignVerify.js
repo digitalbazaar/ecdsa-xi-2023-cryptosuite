@@ -20,8 +20,8 @@ const unsignedCredential = {
     'https://www.w3.org/2018/credentials/v1',
     {
       '@protected': true,
-      AlumniCredential: 'urn:example:AlumniCredential',
-      alumniOf: 'https://schema.org#alumniOf'
+      AlumniCredential: 'https://example.org/examples#AlumniCredential',
+      alumniOf: 'https://schema.org/alumniOf'
     },
     'https://w3id.org/security/data-integrity/v2'
   ],
