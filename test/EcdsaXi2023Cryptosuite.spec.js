@@ -18,7 +18,8 @@ import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
 import {loader} from './documentLoader.js';
 
 const documentLoader = loader.build();
-const extraInformation = new Uint8Array([12, 52, 75, 63, 74, 85, 21, 5, 62, 10,
+const extraInformation = new Uint8Array([
+  12, 52, 75, 63, 74, 85, 21, 5, 62, 10,
   12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
   12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
   12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
@@ -55,12 +56,12 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.not.exist;
       expect(result).to.exist;
       /* eslint-disable max-len */
-      const expectedResult = `<https://example.edu/credentials/1872> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org#AlumniCredential> .
+      const expectedResult = `<https://example.edu/credentials/1872> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/examples#AlumniCredential> .
 <https://example.edu/credentials/1872> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://www.w3.org/2018/credentials#VerifiableCredential> .
 <https://example.edu/credentials/1872> <https://www.w3.org/2018/credentials#credentialSubject> <https://example.edu/students/alice> .
 <https://example.edu/credentials/1872> <https://www.w3.org/2018/credentials#issuanceDate> "2010-01-01T19:23:24Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
 <https://example.edu/credentials/1872> <https://www.w3.org/2018/credentials#issuer> <https://example.edu/issuers/565049> .
-<https://example.edu/students/alice> <https://schema.org#alumniOf> "Example University" .\n`;
+<https://example.edu/students/alice> <https://schema.org/alumniOf> "Example University" .\n`;
       /* eslint-enable max-len */
       result.should.equal(expectedResult);
     });
