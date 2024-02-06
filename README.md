@@ -1,7 +1,7 @@
 # ECDSA XI 2023 Data Integrity Cryptosuite _(@digitalbazaar/ecdsa-xi-2023-cryptosuite)_
 
-[![Build status](https://img.shields.io/github/actions/workflow/status/digitalbazaar/ecdsa-xi-2023-cryptosuite/main.yml)](https://github.com/digitalbazaar/ecdsa-xi-2023-cryptosuite/actions?query=workflow%3A%22Node.js+CI%22)
-[![Coverage status](https://img.shields.io/codecov/c/github/digitalbazaar/ecdsa-xi-2023-cryptosuite)](https://codecov.io/gh/digitalbazaar/ecdsa-xi-2023-cryptosuite)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/digitalbazaar/ecdsa-xi-2023-cryptosuite/main.yaml)](https://github.com/digitalbazaar/ecdsa-xi-2023-cryptosuite/actions/workflows/main.yml)
+[![Coverage Status](https://img.shields.io/codecov/c/github/digitalbazaar/ecdsa-xi-2023-cryptosuite)](https://codecov.io/gh/digitalbazaar/ecdsa-xi-2023-cryptosuite)
 [![NPM Version](https://img.shields.io/npm/v/@digitalbazaar/ecdsa-xi-2023-cryptosuite.svg)](https://npm.im/@digitalbazaar/ecdsa-xi-2023-cryptosuite)
 
 > ECDSA XI 2023 Data Integrity Cryptosuite for use with jsonld-signatures.
