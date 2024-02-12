@@ -28,7 +28,8 @@ const extraInformation = new Uint8Array([
   12, 52, 75, 63
 ]);
 const includeTimestamp = false;
-const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation, includeTimestamp});
+const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation,
+  includeTimestamp});
 
 describe('EcdsaXi2023Cryptosuite', () => {
   describe('exports', () => {
@@ -151,14 +152,16 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.not.exist;
     });
 
-    it('should contain a timestamp with includeTimestamp = true passed', async () => {
+    it('should contain a timestamp with includeTimestamp = true', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
       const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
       const date = '2023-03-01T21:29:24Z';
       const includeTimestamp = true;
-      const ecdsaXi2023CryptosuiteWithTimestamp = createCryptosuite({extraInformation, includeTimestamp});
+      const ecdsaXi2023CryptosuiteWithTimestamp = createCryptosuite(
+        {extraInformation, includeTimestamp});
       const suite = new DataIntegrityProof({
-        signer: keyPair.signer(), date, cryptosuite: ecdsaXi2023CryptosuiteWithTimestamp
+        signer: keyPair.signer(), date,
+        cryptosuite: ecdsaXi2023CryptosuiteWithTimestamp
       });
 
       let error;
