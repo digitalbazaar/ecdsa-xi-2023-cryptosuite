@@ -27,7 +27,8 @@ const extraInformation = new Uint8Array([
   12, 52, 75, 63, 74, 85, 21, 5, 62, 100,
   12, 52, 75, 63
 ]);
-const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation});
+const includeTimestamp = false;
+const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation, includeTimestamp});
 
 describe('EcdsaXi2023Cryptosuite', () => {
   describe('exports', () => {
@@ -148,6 +149,58 @@ describe('EcdsaXi2023Cryptosuite', () => {
       }
 
       expect(error).to.not.exist;
+    });
+
+    it('should contain a timestamp with includeTimestamp = true passed', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+      const includeTimestamp = true;
+      const ecdsaXi2023CryptosuiteWithTimestamp = createCryptosuite({extraInformation, includeTimestamp});
+      const suite = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: ecdsaXi2023CryptosuiteWithTimestamp
+      });
+
+      let error;
+      let signed;
+      try {
+        signed = await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+
+      expect(error).to.not.exist;
+      expect(signed).to.exist;
+      expect(signed.proof.created).to.exist;
+    });
+
+    it('should not contain a timestamp otherwise', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+      const suite = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: ecdsaXi2023Cryptosuite
+      });
+
+      let error;
+      let signed;
+      try {
+        signed = await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+
+      expect(error).to.not.exist;
+      expect(signed).to.exist;
+      expect(signed.proof.created).to.not.exist;
     });
 
     it('should fail to sign with undefined term', async () => {

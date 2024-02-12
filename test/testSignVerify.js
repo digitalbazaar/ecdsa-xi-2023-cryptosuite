@@ -38,10 +38,11 @@ const unsignedCredential = {
 const extraInformation = new Uint8Array([12, 52, 75, 63, 74, 85,
   21, 5, 62, 100]);
 
+const includeTimestamp = false;
 // create suite
 const suite = new DataIntegrityProof({
   signer: keyPair.signer(),
-  cryptosuite: createCryptosuite({extraInformation})
+  cryptosuite: createCryptosuite({extraInformation, includeTimestamp})
 });
 
 // create signed credential
