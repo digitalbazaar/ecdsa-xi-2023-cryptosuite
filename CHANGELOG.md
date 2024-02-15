@@ -1,8 +1,8 @@
 # @digitalbazaar/ecdsa-xi-2023-cryptosuite Changelog
 
-## 1.1.0 - 2024-02-15
+## 1.0.1 - 2024-02-dd
 
-### Added
+### Fixed
 - Pass documentLoader to canonize.
 
 ## 1.0.0 - 2024-02-06
