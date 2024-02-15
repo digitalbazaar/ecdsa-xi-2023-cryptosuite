@@ -9,6 +9,7 @@ const {purposes: {AssertionProofPurpose}} = jsigs;
 import * as EcdsaMultikey from '@digitalbazaar/ecdsa-multikey';
 import {
   credential,
+  credential2,
   ecdsaMultikeyKeyPair,
   ecdsaSecp256KeyPair
 } from './mock-data.js';
@@ -150,6 +151,111 @@ describe('EcdsaXi2023Cryptosuite', () => {
       expect(error).to.not.exist;
     });
 
+    it('proof values should be different for different XI', async () => {
+      const unsignedCredential1 = JSON.parse(JSON.stringify(credential));
+      const unsignedCredential2 = JSON.parse(JSON.stringify(credential));
+      const unsignedCredential3 = JSON.parse(JSON.stringify(credential));
+
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+
+      const extraInformation1 = new Uint8Array([1, 2, 3]);
+      const extraInformation2 = new Uint8Array([4, 5, 6]);
+
+      const cryptosuite1 = createCryptosuite({extraInformation1});
+      const cryptosuite2 = createCryptosuite({extraInformation2});
+      const cryptosuite3 = createCryptosuite();
+
+      const suite1 = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: cryptosuite1
+      });
+      const suite2 = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: cryptosuite2
+      });
+      const suite3 = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: cryptosuite3
+      });
+
+      let error1;
+      let signedCredential1;
+      try {
+        signedCredential1 = await jsigs.sign(unsignedCredential1, {
+          suite: suite1,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error1 = e;
+      }
+
+      let error2;
+      let signedCredential2;
+      try {
+        signedCredential2 = await jsigs.sign(unsignedCredential2, {
+          suite: suite2,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error2 = e;
+      }
+
+      let error3;
+      let signedCredential3;
+      try {
+        signedCredential3 = await jsigs.sign(unsignedCredential3, {
+          suite: suite3,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error3 = e;
+      }
+
+      expect(error1).to.not.exist;
+      expect(error2).to.not.exist;
+      expect(error3).to.not.exist;
+      expect(signedCredential1.proof.proofValue).to.not.equal(
+        signedCredential2.proof.proofValue);
+      expect(signedCredential2.proof.proofValue).to.not.equal(
+        signedCredential3.proof.proofValue);
+      expect(signedCredential1.proof.proofValue).to.not.equal(
+        signedCredential3.proof.proofValue);
+    });
+
+    it('signing should require docLoader for static ctx', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential2));
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+      const suite = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: ecdsaXi2023Cryptosuite
+      });
+
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader: {}
+        });
+      } catch(e) {
+        error = e;
+      }
+      expect(error).to.exist;
+
+      let error2;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error2 = e;
+      }
+      expect(error2).to.not.exist;
+    });
+
     it('should fail to sign with undefined term', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
       unsignedCredential.undefinedTerm = 'foo';
@@ -203,8 +309,34 @@ describe('EcdsaXi2023Cryptosuite', () => {
     it('should fail to sign with non-bytes extraInformation', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
       unsignedCredential.type.push('UndefinedType');
+      const badXI = 100;
+      const badCryptosuite = createCryptosuite({badXI});
+      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
+      const date = '2023-03-01T21:29:24Z';
+      const suite = new DataIntegrityProof({
+        signer: keyPair.signer(), date, cryptosuite: badCryptosuite
+      });
 
-      const badCryptosuite = createCryptosuite(100);
+      let error;
+      try {
+        await jsigs.sign(unsignedCredential, {
+          suite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+      } catch(e) {
+        error = e;
+      }
+
+      expect(error).to.exist;
+      expect(error.name).to.equal('jsonld.ValidationError');
+    });
+
+    it('should fail to sign with no extraInformation', async () => {
+      const unsignedCredential = JSON.parse(JSON.stringify(credential));
+      unsignedCredential.type.push('UndefinedType');
+
+      const badCryptosuite = createCryptosuite({});
       const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
       const date = '2023-03-01T21:29:24Z';
       const suite = new DataIntegrityProof({
@@ -375,6 +507,47 @@ describe('EcdsaXi2023Cryptosuite', () => {
 
         expect(result.verified).to.be.false;
         expect(errors[0].name).to.equal('NotFoundError');
+      });
+
+    it('should fail verification if wrong extraInformation given',
+      async () => {
+        const notTheOriginalXI = new Uint8Array([1, 2, 3]);
+        const badCryptosuite = createCryptosuite({
+          extraInformation: notTheOriginalXI});
+        const badsuite = new DataIntegrityProof({
+          cryptosuite: badCryptosuite
+        });
+
+        const result = await jsigs.verify(signedCredential, {
+          suite: badsuite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+
+        const {errors} = result.error;
+
+        expect(result.verified).to.be.false;
+        expect(errors[0].name).to.equal('Error');
+
+      });
+
+    it('should fail verification if no extraInformation given',
+      async () => {
+        const badCryptosuite = createCryptosuite();
+        const badsuite = new DataIntegrityProof({
+          cryptosuite: badCryptosuite
+        });
+
+        const result = await jsigs.verify(signedCredential, {
+          suite: badsuite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+
+        const {errors} = result.error;
+
+        expect(result.verified).to.be.false;
+        expect(errors[0].name).to.equal('Error');
       });
   });
 });
