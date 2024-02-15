@@ -57,3 +57,23 @@ export const credential = {
     alumniOf: 'Example University'
   }
 };
+
+export const credential2 = {
+  '@context': [
+    'https://www.w3.org/2018/credentials/v1',
+    'https://www.fakeTestUrl.org/2024/credentials/v1',
+    {
+      AlumniCredential: 'https://example.org/examples#AlumniCredential',
+      alumniOf: 'https://schema.org/alumniOf'
+    },
+    'https://w3id.org/security/data-integrity/v2'
+  ],
+  id: 'https://example.edu/credentials/1872',
+  type: ['VerifiableCredential', 'AlumniCredential', 'fakeType'],
+  issuer: 'https://example.edu/issuers/565049',
+  issuanceDate: '2010-01-01T19:23:24Z',
+  credentialSubject: {
+    id: 'https://example.edu/students/alice',
+    alumniOf: 'Example University'
+  }
+};
