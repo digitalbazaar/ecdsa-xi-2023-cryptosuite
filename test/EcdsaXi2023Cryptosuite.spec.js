@@ -30,6 +30,35 @@ const extraInformation = new Uint8Array([
 ]);
 const ecdsaXi2023Cryptosuite = createCryptosuite({extraInformation});
 
+const testSignedCredential = {
+  '@context': [
+    'https://www.w3.org/2018/credentials/v1',
+    {
+      AlumniCredential: 'https://example.org/examples#AlumniCredential',
+      alumniOf: 'https://schema.org/alumniOf'
+    },
+    'https://w3id.org/security/data-integrity/v2'
+  ],
+  id: 'https://example.edu/credentials/1872',
+  type: [ 'VerifiableCredential', 'AlumniCredential' ],
+  issuer: 'https://example.edu/issuers/565049',
+  issuanceDate: '2010-01-01T19:23:24Z',
+  credentialSubject: {
+    id: 'https://example.edu/students/alice',
+    alumniOf: 'Example University'
+  },
+  proof: {
+    type: 'DataIntegrityProof',
+    created: '2023-03-01T21:29:24Z',
+    verificationMethod: 'https://example.edu/issuers/' +
+    '565049#zDnaekGZTbQBerwcehBSXLqAg6s55hVEBms1zFy89VHXtJSa9',
+    cryptosuite: 'ecdsa-xi-2023',
+    proofPurpose: 'assertionMethod',
+    proofValue: 'z2Q8gjsP1zrCA8wLb6pErmGJic5Uw7723JAjXSTkdhib2' +
+    'xoH4LBR49LnbijfhjVMm7NfKYYiQxF2tC6pgEmqq9MtZ'
+  }
+};
+
 describe('EcdsaXi2023Cryptosuite', () => {
   describe('exports', () => {
     it('it should have proper exports', async () => {
@@ -147,7 +176,6 @@ describe('EcdsaXi2023Cryptosuite', () => {
       } catch(e) {
         error = e;
       }
-
       expect(error).to.not.exist;
     });
 
@@ -511,6 +539,59 @@ describe('EcdsaXi2023Cryptosuite', () => {
         });
 
         const result = await jsigs.verify(signedCredential, {
+          suite: badsuite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+
+        const {errors} = result.error;
+
+        expect(result.verified).to.be.false;
+        expect(errors[0].name).to.equal('Error');
+      });
+
+    it('should verify a static document', async () => {
+      const suite = new DataIntegrityProof({
+        cryptosuite: ecdsaXi2023Cryptosuite
+      });
+      const result = await jsigs.verify(testSignedCredential, {
+        suite,
+        purpose: new AssertionProofPurpose(),
+        documentLoader
+      });
+
+      expect(result.verified).to.be.true;
+    });
+
+    it('should fail verification of a static document if wrong XI given',
+      async () => {
+        const notTheOriginalXI = new Uint8Array([1, 2, 3]);
+        const badCryptosuite = createCryptosuite({
+          extraInformation: notTheOriginalXI});
+        const badsuite = new DataIntegrityProof({
+          cryptosuite: badCryptosuite
+        });
+
+        const result = await jsigs.verify(testSignedCredential, {
+          suite: badsuite,
+          purpose: new AssertionProofPurpose(),
+          documentLoader
+        });
+
+        const {errors} = result.error;
+
+        expect(result.verified).to.be.false;
+        expect(errors[0].name).to.equal('Error');
+      });
+
+    it('should fail verification of a static document if no XI given',
+      async () => {
+        const badCryptosuite = createCryptosuite();
+        const badsuite = new DataIntegrityProof({
+          cryptosuite: badCryptosuite
+        });
+
+        const result = await jsigs.verify(testSignedCredential, {
           suite: badsuite,
           purpose: new AssertionProofPurpose(),
           documentLoader
