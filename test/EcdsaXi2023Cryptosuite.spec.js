@@ -308,9 +308,8 @@ describe('EcdsaXi2023Cryptosuite', () => {
 
     it('should fail to sign with non-bytes extraInformation', async () => {
       const unsignedCredential = JSON.parse(JSON.stringify(credential));
-      unsignedCredential.type.push('UndefinedType');
       const badXI = 100;
-      const badCryptosuite = createCryptosuite({badXI});
+      const badCryptosuite = createCryptosuite({extraInformation: badXI});
       const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
       const date = '2023-03-01T21:29:24Z';
       const suite = new DataIntegrityProof({
@@ -329,33 +328,7 @@ describe('EcdsaXi2023Cryptosuite', () => {
       }
 
       expect(error).to.exist;
-      expect(error.name).to.equal('jsonld.ValidationError');
-    });
-
-    it('should fail to sign with no extraInformation', async () => {
-      const unsignedCredential = JSON.parse(JSON.stringify(credential));
-      unsignedCredential.type.push('UndefinedType');
-
-      const badCryptosuite = createCryptosuite({});
-      const keyPair = await EcdsaMultikey.from({...ecdsaMultikeyKeyPair});
-      const date = '2023-03-01T21:29:24Z';
-      const suite = new DataIntegrityProof({
-        signer: keyPair.signer(), date, cryptosuite: badCryptosuite
-      });
-
-      let error;
-      try {
-        await jsigs.sign(unsignedCredential, {
-          suite,
-          purpose: new AssertionProofPurpose(),
-          documentLoader
-        });
-      } catch(e) {
-        error = e;
-      }
-
-      expect(error).to.exist;
-      expect(error.name).to.equal('jsonld.ValidationError');
+      expect(error.name).to.equal('TypeError');
     });
 
     it('should fail to sign with incorrect signer algorithm', async () => {
@@ -528,7 +501,6 @@ describe('EcdsaXi2023Cryptosuite', () => {
 
         expect(result.verified).to.be.false;
         expect(errors[0].name).to.equal('Error');
-
       });
 
     it('should fail verification if no extraInformation given',
