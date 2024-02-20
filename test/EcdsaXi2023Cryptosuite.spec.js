@@ -51,11 +51,11 @@ const testSignedCredential = {
     type: 'DataIntegrityProof',
     created: '2023-03-01T21:29:24Z',
     verificationMethod: 'https://example.edu/issuers/' +
-    '565049#zDnaekGZTbQBerwcehBSXLqAg6s55hVEBms1zFy89VHXtJSa9',
+      '565049#zDnaekGZTbQBerwcehBSXLqAg6s55hVEBms1zFy89VHXtJSa9',
     cryptosuite: 'ecdsa-xi-2023',
     proofPurpose: 'assertionMethod',
     proofValue: 'z2Q8gjsP1zrCA8wLb6pErmGJic5Uw7723JAjXSTkdhib2' +
-    'xoH4LBR49LnbijfhjVMm7NfKYYiQxF2tC6pgEmqq9MtZ'
+      'xoH4LBR49LnbijfhjVMm7NfKYYiQxF2tC6pgEmqq9MtZ'
   }
 };
 
