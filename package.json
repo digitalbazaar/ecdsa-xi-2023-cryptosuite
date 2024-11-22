@@ -16,7 +16,8 @@
   "dependencies": {
     "@digitalbazaar/di-sd-primitives": "^3.0.1",
     "@digitalbazaar/ecdsa-multikey": "^1.6.0",
-    "jsonld": "^8.3.2"
+    "jsonld": "^8.3.2",
+    "rdf-canonize": "^4.0.1"
   },
   "devDependencies": {
     "@digitalbazaar/data-integrity": "^2.0.0",
