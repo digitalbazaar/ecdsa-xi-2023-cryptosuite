@@ -2,11 +2,11 @@
 
 ## 1.1.0 - 2024-11-xx
 
-### Changed
-- Update C14N alg to RDFC-1.0.
-
 ### Added
 - Add support for `@direction`.
+
+### Changed
+- Update C14N alg to RDFC-1.0.
 
 ## 1.0.1 - 2024-02-15
 
