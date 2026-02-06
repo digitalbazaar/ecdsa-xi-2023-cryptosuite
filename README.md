@@ -1,6 +1,6 @@
 # ECDSA XI 2023 Data Integrity Cryptosuite _(@digitalbazaar/ecdsa-xi-2023-cryptosuite)_
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/digitalbazaar/ecdsa-xi-2023-cryptosuite/main.yaml)](https://github.com/digitalbazaar/ecdsa-xi-2023-cryptosuite/actions/workflows/main.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/digitalbazaar/ecdsa-xi-2023-cryptosuite/main.yaml)](https://github.com/digitalbazaar/ecdsa-xi-2023-cryptosuite/actions/workflows/main.yaml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/digitalbazaar/ecdsa-xi-2023-cryptosuite)](https://codecov.io/gh/digitalbazaar/ecdsa-xi-2023-cryptosuite)
 [![NPM Version](https://img.shields.io/npm/v/@digitalbazaar/ecdsa-xi-2023-cryptosuite.svg)](https://npm.im/@digitalbazaar/ecdsa-xi-2023-cryptosuite)
 
@@ -34,13 +34,13 @@ TBD
 
 To install from NPM:
 
-```
+```sh
 npm install @digitalbazaar/ecdsa-xi-2023-cryptosuite
 ```
 
 To install locally (for development):
 
-```
+```sh
 git clone https://github.com/digitalbazaar/ecdsa-xi-2023-cryptosuite.git
 cd ecdsa-xi-2023-cryptosuite
 npm install
