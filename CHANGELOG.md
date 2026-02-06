@@ -1,6 +1,6 @@
 # @digitalbazaar/ecdsa-xi-2023-cryptosuite Changelog
 
-## 1.2.0 - 2026-02-xx
+## 1.2.0 - 2026-02-05
 
 ### Changed
 - Update dependencies:
